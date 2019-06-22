@@ -6,8 +6,10 @@ from pprint import pformat
 import aiohttp_jinja2
 from aiohttp import web
 from aiohttp_jinja2 import render_template
+from multidict import MultiDict
 
 from application.dispatcher import Dispatcher
+from application.exceptions import WrongApiRequestException
 from application.support.bitcoin_support import Billing
 from application.support.user_support import get_user, get_user_profile, select_all_profiles
 
@@ -98,6 +100,57 @@ class LandingView(web.View):
         return render_template(template_name='html/index.html', request=self.request, context={})
 
 
+class ApiView(web.View):
+    headers = MultiDict({'Access-Control-Allow-Origin': 'http://localhost:8383'})
+    template_name = 'json/profiles.json'
+
+    @staticmethod
+    async def _get_field_value(react_json: dict, field_name: str, field_type: type):
+        """
+
+        :param react_json: dict with request from frontend
+        :param field_name: name of field from request
+        :param field_type: datatype of field
+        :return: value with field type
+        """
+        try:
+            field_value = field_type(react_json[field_name])
+        except (KeyError, TypeError):
+            field_value = None
+        return field_value
+
+    @staticmethod
+    async def get_search_criteria_dict(react_json: dict) -> dict:
+        fields = {
+            'fio': str, 'age': list, 'conviction': bool, 'army': bool, 'credit': bool,
+            'education': bool, 'access': bool, 'capacity': bool, 'private': bool,
+            'skills': list
+        }
+        response_dict = {}
+        for field_name in fields.keys():
+            field_type = fields[field_name]
+            field_value = await ApiView._get_field_value(react_json=react_json, field_name=field_name, field_type=field_type)
+            response_dict[field_name] = field_value
+        return response_dict
+
+    @staticmethod
+    async def get_context(search_criteria_dict) -> dict:
+        context = {}
+        return context
+
+    async def post(self):
+        react_json = await self.request.json()
+        search_criteria_dict = await self.get_search_criteria_dict(react_json=react_json)
+        try:
+            context = await self.get_context(search_criteria_dict=search_criteria_dict)
+            body = render_template(template_name=self.template_name, request=self.request, context=context).body
+            response = web.Response(body=body, headers=self.headers)
+            return response
+        except Exception as e:
+            print_tb(e)
+            return web.Response(status=500)
+
+
 class ProtectedView(web.View):
     def __init__(self, request: web.Request):
         super().__init__(request)
@@ -109,6 +162,7 @@ class ProtectedView(web.View):
         logging.info(self.request.headers)
         logging.info('REQUEST from IP: %s' % self.real_ip)
         self.billing = Billing(config=self.request.app['config'])
+
         self.config = self.request.app['config']
 
     @property

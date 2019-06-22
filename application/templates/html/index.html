@@ -1,0 +1,58 @@
+{% extends "html/base.html" %}
+
+{% set title = "Main" %}
+
+{% block content %}
+    <div class="row center">
+        <br/><br/>
+        <img src="{{ STATIC }}img/main_logo.png" class="responsive-img" width="500px" alt="logo"/>
+        <div class="header col s12 light blue-text">
+            <div class="container">
+                <div class="section">
+
+                    <!--   Icon Section   -->
+                    <div class="row">
+                        <div class="col s12 m4">
+                            <div class="icon-block">
+                                <h2 class="center light-blue-text"><i class="material-icons">flash_on</i></h2>
+                                <h5 class="center"> Волатильность</h5>
+
+                                <p class="light">Отказ от наличных денег - это позволит автоматически контролировать
+                                    движения средств и сэкономить на печати и обслуживании бумажных денег.</p>
+                            </div>
+                        </div>
+
+                        <div class="col s12 m4">
+                            <div class="icon-block">
+                                <h2 class="center light-blue-text"><i class="material-icons">group</i></h2>
+                                <h5 class="center">Инфляция</h5>
+
+                                <p class="light">Привязка курса ко времени. Взять за основу - 1 час неквалифицированного
+                                    труда и приравнять его к 1.00 рублю. Регламентировать ставки по зарплатам в
+                                    зависимости от профессии, опыта, локации.</p>
+                            </div>
+                        </div>
+
+                        <div class="col s12 m4">
+                            <div class="icon-block">
+                                <h2 class="center light-blue-text"><i class="material-icons">settings</i></h2>
+                                <h5 class="center">Непрозрачность</h5>
+
+                                <p class="light">Транзакции осуществить с помощью блокчейн. Открыть доступ для
+                                    копирования и анализа базы данных транзакций. Это обеспечит безопасность, надежность
+                                    и прозрачность всей системы.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <br><br>
+            </div>
+
+        </div>
+    </div>
+    <div class="row center">
+        <a href="https://tele.gg/TreasuresBot" id="download-button" style="border-radius: 20px;font-weight: bolder;"
+           class="btn-large waves-effect waves-light orange darken-3 yellow-text">Join now 💎</a>
+    </div>
+{% endblock %}

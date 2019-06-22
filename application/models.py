@@ -40,9 +40,17 @@ class BaseModel(peewee.Model):
         database = database
 
 
+class Person(BaseModel):
+    fio = peewee.CharField(default='', max_length=200)
+    age = peewee.IntegerField()
+
+
+
+
 class User(BaseModel):
     first_name = peewee.CharField(max_length=200)
     last_name = peewee.CharField(null=True, max_length=200)
+    surname = peewee.CharField(null=True, max_length=200)
     user_name = peewee.CharField(null=True, max_length=200)
     is_bot = peewee.BooleanField(null=True)
     is_blocked = peewee.BooleanField(default=False)
@@ -80,9 +88,6 @@ class User(BaseModel):
         except Exception as e:
             print_tb(e)
 
-
-
-
     def __str__(self):
         if self.last_name:
             return "%s %s " % (self.first_name, self.last_name)
@@ -94,16 +99,7 @@ class UserProfile(BaseModel):
     user = peewee.ForeignKeyField(User, related_name='user')
     sponsor_id = peewee.IntegerField(null=True, default=None)
     lang = peewee.CharField(max_length=2, null=True, default='en')
-    btc_payout_address = peewee.CharField(default=None, null=True, max_length=100)
-    btc_local_address = peewee.CharField(default=None, null=True, max_length=100)
-    balance = peewee.DecimalField(default=0)
-    payout_balance = peewee.DecimalField(default=0)
     last_click_date = peewee.DateTimeField(default=datetime.datetime.now() - datetime.timedelta(days=1))
-    real_mode = peewee.BooleanField(default=False)
-    picks = peewee.IntegerField(default=0)
-    gems = peewee.IntegerField(default=0)
-    position = peewee.IntegerField(default=1)
-    steps = peewee.IntegerField(default=5)
 
     class Meta:
         db_table = 'bot_profile'
@@ -111,6 +107,17 @@ class UserProfile(BaseModel):
     def __str__(self):
         if self.user:
             return "%s %s" % (self.user, self.lang)
+
+
+class UserDocument(BaseModel):
+    class Types:
+        drive_license = 'drive license'
+        passport = 'passport'
+        diploma = 'diploma'
+        insurance = 'insurance'
+        inn = 'inn'
+
+    doc_type = peewee.CharField(max_length=20, choices=[Types.drive_license, Types.passport])
 
 
 class UserFriend(BaseModel):

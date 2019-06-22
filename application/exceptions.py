@@ -8,3 +8,10 @@ class NotEnoughFunds(Exception):
         super(NotEnoughFunds, self).__init__(
             'User have not enough balance to process transaction'
         )
+
+
+class WrongApiRequestException(Exception):
+    def __init__(self, reason):
+        super(WrongApiRequestException, self).__init__(
+            'Wrong api request: %s' % reason
+        )

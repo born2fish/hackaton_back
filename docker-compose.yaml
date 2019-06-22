@@ -1,0 +1,31 @@
+
+version: '2.0'
+
+services:
+  postgres:
+      image: postgres:10
+      volumes:
+      - "/var/run/postgres/postgres.sock:/var/run/postgres/postgres.sock"
+      - "dbdata:/var/lib/postgresql/data"
+      environment:
+          - POSTGRES_USER=postgres
+          - POSTGRES_PASSWORD=postgres
+          - POSTGRES_DB=postgres
+      ports:
+      - 5432:5432
+
+
+  application:
+    build: .
+    volumes:
+      - ./:/application
+    # command: gunicorn info.app:app -b :8080 --worker-class aiohttp.GunicornWebWorker --reload --access-logfile -
+    command: python -m application
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+
+volumes:
+  dbdata:

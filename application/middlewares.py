@@ -22,6 +22,7 @@ async def get_translator(profile):
         _ = translator_en
     return _
 
+
 async def handle_400(request, response):
     response = aiohttp_jinja2.render_template('html/400.html',
                                               request,
@@ -68,5 +69,3 @@ def error_pages(overrides):
 async def bot_middleware(request, handler):
     response = await handler(request)
     return response
-
-

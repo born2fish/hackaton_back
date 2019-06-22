@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->
+    <meta property="og:image" content="{{ STATIC }}img/main_logo_tp.png"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+    <title>Hackaton</title>
+    <meta name="description"
+          content="Telegram based crypto game where you can search gems and then exchange them for real money">
+    <meta name="keywords"
+          content="Telegram game, crypto game, crypto earnings, treasures hunt, treasures, gems dig, search">
+    <meta charset="utf-8">
+    <!-- FONTS -->
+    <link href="https://fonts.googleapis.com/css?family=Black+Han+Sans|Bungee&display=swap" rel="stylesheet">
+    <!-- CSS  -->
+    <link href="{{ STATIC }}css/styles.css" rel="stylesheet"/>
+    <!-- Custom fonts for this template-->
+    <link href="{{ STATIC }}css/font-awesome-all.min.css" rel="stylesheet" type="text/css">
+
+    <!-- Page level plugin CSS-->
+    <link href="{{ STATIC }}css/dataTables.bootstrap4.css" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://materializecss.com/dist/css/materialize.min.css" type="text/css" rel="stylesheet"
+          media="screen,projection"/>
+    <link href="https://materializecss.com/templates/starter-template/css/style.css" type="text/css" rel="stylesheet"
+          media="screen,projection"/>
+</head>
+<body style="background-color: red">
+
+<canvas id="projector">Your browser does not support the Canvas element.</canvas>
+<div class="section no-pad-bot" id="index-banner" style="margin-top: -20px;">
+    <div class="container">
+        {% block content %}
+
+        {% endblock %}
+    </div>
+</div>
+<script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
+<script src="{{ STATIC }}js/background.js"></script>
+
+<!--  Scripts-->
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="https://materializecss.com/bin/materialize.js"></script>
+<script src="https://materializecss.com/templates/starter-template/js/init.js"></script>
+
+</body>
+</html>

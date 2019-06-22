@@ -1,0 +1,9 @@
+{% extends "html/base.html" %}
+
+{% set title = "ADMIN" %}
+
+{% block content %}
+    <p style="  text-align: center; border: 3px solid orange; color: grey;font-size: 30pt; margin:25% 50px 50px 50px;">
+        Access <b style="color: darkred;">denied</b> for <b>{{ real_ip }}</b>
+    </p>
+{% endblock %}

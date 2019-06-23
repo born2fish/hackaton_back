@@ -201,7 +201,7 @@ class ApiView(web.View):
         try:
             context = await self.get_context(search_criteria_dict=search_criteria_dict)
             body = render_template(template_name=self.template_name, request=self.request, context=context).body
-            response = web.Response(body=body)  # , headers=self.headers
+            response = web.Response(body=body, charset='utf-8')  # , headers=self.headers
             return response
         except Exception as e:
             print_tb(e)

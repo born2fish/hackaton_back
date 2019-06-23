@@ -9,7 +9,7 @@ from playhouse.migrate import PostgresqlMigrator
 from application.settings import MAIN_APP_NAME, REFERRAL_CODE_MAP
 from application.utils import print_tb, SATOSHIS_IN_BTC
 
-database = peewee_async.PostgresqlDatabase(MAIN_APP_NAME)
+database = peewee_async.PostgresqlDatabase('hackaton')
 migrator = PostgresqlMigrator(database=database)
 objects = peewee_async.Manager(database)
 
@@ -42,9 +42,44 @@ class BaseModel(peewee.Model):
 
 class Person(BaseModel):
     fio = peewee.CharField(default='', max_length=200)
+    sex = peewee.BooleanField(default=True)
     age = peewee.IntegerField()
+    conviction = peewee.BooleanField()
+    army = peewee.BooleanField()
+    credit = peewee.BooleanField()
+    education = peewee.BooleanField()
+    access = peewee.BooleanField()
+    capacity = peewee.BooleanField()
+    private = peewee.BooleanField()
+
+    def __str__(self):
+        return str(self.fio)
+
+    class Meta:
+        db_table = 'bot_person'
 
 
+class Skill(BaseModel):
+    name = peewee.CharField(max_length='500')
+
+    def __str__(self):
+        return str(self.name)
+
+    class Meta:
+        db_table = 'bot_skill'
+
+
+class PersonSkill(BaseModel):
+    person = peewee.ForeignKeyField(Person, related_name='person')
+    skill = peewee.ForeignKeyField(Skill, related_name='skill')
+    confirmed = peewee.BooleanField(default=False)
+    confirmations_count = peewee.IntegerField(default=0)
+
+    def __str__(self):
+        return str(self.name)
+
+    class Meta:
+        db_table = 'bot_person_skill'
 
 
 class User(BaseModel):

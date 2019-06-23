@@ -98,11 +98,11 @@ async def get_flag(code: str) -> str:
 
 
 async def get_btc_from_satoshis(satoshis_count: int) -> decimal.Decimal:
-    return round(decimal.Decimal(str(satoshis_count/SATOSHIS_IN_BTC)), 5)
+    return round(decimal.Decimal(str(satoshis_count / SATOSHIS_IN_BTC)), 5)
 
 
 async def get_satoshis_from_btc(btc_count: decimal.Decimal) -> int:
-    return int(btc_count*SATOSHIS_IN_BTC)
+    return int(btc_count * SATOSHIS_IN_BTC)
 
 
 async def get_satoshis_commission(blockcypher_worker) -> int:
@@ -138,6 +138,68 @@ def create_app(config):
     bot = Bot(token=config['app']['token'])
     app['bot'] = bot
     return app
+
+
+class CriteriaMatcher:
+    def __init__(self, person, criteria_name: str, field_value):
+        self.person = person
+        self.criteria_name = criteria_name
+        self.field_value = field_value
+
+    async def _match_fio(self):
+        if self.field_value in self.person.fio:
+            result = True
+        else:
+            result = False
+        return result
+
+    async def _match_sex(self):
+        return True if self.person.sex == self.field_value else False
+
+    async def _match_age(self):
+        age_from = self.field_value[0]
+        age_to = self.field_value[1]
+        return True if age_from <= self.person.age <= age_to else False
+
+    async def _match_conviction(self):
+        return True if self.person.conviction == self.field_value else False
+
+    async def _match_army(self):
+        return True if self.person.army == self.field_value else False
+
+    async def _match_credit(self):
+        return True if self.person.credit == self.field_value else False
+
+    async def _match_education(self):
+        return True if self.person.education == self.field_value else False
+
+    async def _match_access(self):
+        return True if self.person.access == self.field_value else False
+
+    async def _match_capacity(self):
+        return True if self.person.capacity == self.field_value else False
+
+    async def _match_private(self):
+        return True if self.person.private == self.field_value else False
+
+    async def parse_person_criteria(self):
+        match_map = {
+            'fio': self._match_fio,
+            'sex': self._match_sex,
+            'age': self._match_age,
+            'conviction': self._match_conviction,
+            'army': self._match_army,
+            'credit': self._match_credit,
+            'education': self._match_education,
+            'access': self._match_access,
+            'capacity': self._match_capacity,
+            'private': self._match_private
+
+        }
+        matcher_func = match_map[self.criteria_name]
+        result = await matcher_func()
+
+        return result
 
 
 ROOT_DIR = settings.ROOT_DIR.replace(settings.MAIN_APP_NAME, '')

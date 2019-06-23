@@ -2,6 +2,7 @@ import json
 import json
 import logging
 from pprint import pformat
+from typing import Union
 
 import aiohttp_jinja2
 from aiohttp import web
@@ -13,9 +14,9 @@ from application.exceptions import WrongApiRequestException
 from application.support.bitcoin_support import Billing
 from application.support.user_support import get_user, get_user_profile, select_all_profiles
 
-from application.models import objects, Treasure
+from application.models import objects, Treasure, Person
 from application.settings import BLOCKED_USERS_ID_LIST, REFERRAL_CODE_MAP
-from application.utils import print_tb
+from application.utils import print_tb, CriteriaMatcher
 
 
 class BotUpdateView(web.View):
@@ -115,27 +116,65 @@ class ApiView(web.View):
         """
         try:
             field_value = field_type(react_json[field_name])
-        except (KeyError, TypeError):
+        except (KeyError, TypeError) as e:
+            # print_tb(e)
             field_value = None
         return field_value
 
     @staticmethod
     async def get_search_criteria_dict(react_json: dict) -> dict:
         fields = {
-            'fio': str, 'age': list, 'conviction': bool, 'army': bool, 'credit': bool,
+            'fio': str, 'sex': bool, 'age': list, 'conviction': bool, 'army': bool, 'credit': bool,
             'education': bool, 'access': bool, 'capacity': bool, 'private': bool,
             'skills': list
         }
         response_dict = {}
         for field_name in fields.keys():
             field_type = fields[field_name]
-            field_value = await ApiView._get_field_value(react_json=react_json, field_name=field_name, field_type=field_type)
+            field_value = await ApiView._get_field_value(react_json=react_json, field_name=field_name,
+                                                         field_type=field_type)
             response_dict[field_name] = field_value
         return response_dict
 
     @staticmethod
     async def get_context(search_criteria_dict) -> dict:
-        context = {}
+        async def _get_person_criteria_by_name(arg_name: str):
+            criteria_map = {
+                'fio': person.fio,
+                'sex': person.sex,
+                'age': person.age,
+                'conviction': person.conviction,
+                'army': person.army,
+                'credit': person.credit,
+                'education': person.education,
+                'access': person.access,
+                'capacity': person.capacity,
+                'private': person.private,
+            }
+            try:
+                result = criteria_map[arg_name]
+            except KeyError:
+                result = None
+            return result
+
+        all_persons = await objects.execute(Person.select())
+        filtered_persons = []
+
+        for person in all_persons[:2]:  # todo <<<<
+            for criteria_key in search_criteria_dict.keys():
+                criteria = search_criteria_dict[criteria_key]
+                if criteria is not None:
+                    person_criteria = await _get_person_criteria_by_name(arg_name=criteria_key)
+                    if person_criteria:
+                        criteria_matcher = CriteriaMatcher(person=person, criteria_name=criteria_key,
+                                                           field_value=criteria)
+                        if await criteria_matcher.parse_person_criteria():
+                            if person not in filtered_persons:
+                                filtered_persons.append(person)
+                        else:
+                            if person in filtered_persons:
+                                filtered_persons.remove(person)
+        context = {"persons": filtered_persons}
         return context
 
     async def post(self):

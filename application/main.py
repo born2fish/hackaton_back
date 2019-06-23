@@ -34,12 +34,6 @@ async def close_pg(app):
     await app['db'].wait_closed()
 
 
-def setup_cors(app: web.Application):
-    cors = aiohttp_cors.setup(app)
-    for resource in app.router.resources():
-        cors.add(resource)
-
-
 def init(loop, argv):
     logging.getLogger('asyncio').addFilter(SkipTimeouts())
     #
@@ -55,8 +49,6 @@ def init(loop, argv):
     app.on_startup.append(init_pg)
     # shutdown db connection on exit
     app.on_cleanup.append(close_pg)
-
-    setup_cors(app)
     jinja_env = aiohttp_jinja2.get_env(app)
     jinja_env.globals['STATIC'] = '/static/'
     jinja_env.globals['_'] = app['gettext']

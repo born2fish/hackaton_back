@@ -154,6 +154,8 @@ class CriteriaMatcher:
         return result
 
     async def _match_sex(self):
+        print(self.person.sex, type(self.person.sex))
+        print(self.field_value, type(self.field_value))
         return True if self.person.sex == self.field_value else False
 
     async def _match_age(self):

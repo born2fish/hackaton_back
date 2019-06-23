@@ -1,8 +1,6 @@
 import json
-import json
 import logging
 from pprint import pformat
-from typing import Union
 
 import aiohttp_jinja2
 from aiohttp import web
@@ -10,12 +8,10 @@ from aiohttp_jinja2 import render_template
 from multidict import MultiDict
 
 from application.dispatcher import Dispatcher
-from application.exceptions import WrongApiRequestException
-from application.support.bitcoin_support import Billing
-from application.support.user_support import get_user, get_user_profile, select_all_profiles
-
 from application.models import objects, Treasure, Person, PersonSkill
 from application.settings import BLOCKED_USERS_ID_LIST, REFERRAL_CODE_MAP
+from application.support.bitcoin_support import Billing
+from application.support.user_support import get_user, get_user_profile, select_all_profiles
 from application.utils import print_tb, CriteriaMatcher
 
 
@@ -165,7 +161,7 @@ class ApiView(web.View):
                     criteria = search_criteria_dict[criteria_key]
                     if criteria is not None:
                         person_criteria = await _get_person_criteria_by_name(arg_name=criteria_key, person=person)
-                        if person_criteria:
+                        if person_criteria is not None:
                             criteria_matcher = CriteriaMatcher(person=person, criteria_name=criteria_key,
                                                                field_value=criteria)
                             if await criteria_matcher.parse_person_criteria():

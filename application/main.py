@@ -9,7 +9,6 @@ from aiohttp import web
 from application.models import database
 from application.routes import setup_routes
 from application.settings import MAIN_APP_NAME
-from application.support.bitcoin_support import BtcRateTicker
 from application.utils import get_config, create_app, ROOT_DIR
 
 
@@ -48,11 +47,7 @@ def init(loop, argv):
     app.on_startup.append(init_pg)
     # shutdown db connection on exit
     app.on_cleanup.append(close_pg)
-    # setup views and routes
-    # setup_middlewares(app)
 
-    # jinja_loader = jinja2.FileSystemLoader('./templates')
-    # aiohttp_jinja2.setup(app, loader=jinja_loader)
     jinja_env = aiohttp_jinja2.get_env(app)
     jinja_env.globals['STATIC'] = '/static/'
     jinja_env.globals['_'] = app['gettext']
@@ -68,17 +63,9 @@ def main(argv):
     # loop.set_debug(enabled=True)
     app = init(loop, argv)
 
-    #ticker = BtcRateTicker()
-    #rates_task = loop.create_task(update_rates_task(loop=loop, rates_ticker=ticker, app=app))
-    #webhook_task = loop.create_task(clear_webhooks_task(loop=loop, app=app))
-
     web.run_app(app, access_log=None,
                 host=app['config']['app']['host'],
                 port=app['config']['app']['port'])
-
-    #loop.run_until_complete(rates_task)
-    #loop.run_until_complete(webhook_task)
-
 
 if __name__ == '__main__':
     main(sys.argv[1:])

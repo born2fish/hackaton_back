@@ -14,7 +14,7 @@ from application.exceptions import WrongApiRequestException
 from application.support.bitcoin_support import Billing
 from application.support.user_support import get_user, get_user_profile, select_all_profiles
 
-from application.models import objects, Treasure, Person
+from application.models import objects, Treasure, Person, PersonSkill
 from application.settings import BLOCKED_USERS_ID_LIST, REFERRAL_CODE_MAP
 from application.utils import print_tb, CriteriaMatcher
 
@@ -102,7 +102,7 @@ class LandingView(web.View):
 
 
 class ApiView(web.View):
-    headers = MultiDict({'Access-Control-Allow-Origin': 'http://localhost:8383'})
+    headers = MultiDict({'Access-Control-Allow-Origin': 'http://localhost:9999'})
     template_name = 'json/profiles.json'
 
     @staticmethod
@@ -138,7 +138,7 @@ class ApiView(web.View):
 
     @staticmethod
     async def get_context(search_criteria_dict) -> dict:
-        async def _get_person_criteria_by_name(arg_name: str):
+        async def _get_person_criteria_by_name(arg_name: str, person: Person):
             criteria_map = {
                 'fio': person.fio,
                 'sex': person.sex,
@@ -157,24 +157,41 @@ class ApiView(web.View):
                 result = None
             return result
 
-        all_persons = await objects.execute(Person.select())
-        filtered_persons = []
+        async def _get_filtered_persons():
+            all_persons = await objects.execute(Person.select())
+            filtered_persons = []
+            for person in all_persons:
+                for criteria_key in search_criteria_dict.keys():
+                    criteria = search_criteria_dict[criteria_key]
+                    if criteria is not None:
+                        person_criteria = await _get_person_criteria_by_name(arg_name=criteria_key, person=person)
+                        if person_criteria:
+                            criteria_matcher = CriteriaMatcher(person=person, criteria_name=criteria_key,
+                                                               field_value=criteria)
+                            if await criteria_matcher.parse_person_criteria():
+                                if person not in filtered_persons:
+                                    filtered_persons.append(person)
+                            else:
+                                if person in filtered_persons:
+                                    filtered_persons.remove(person)
+            return filtered_persons
 
-        for person in all_persons:
-            for criteria_key in search_criteria_dict.keys():
-                criteria = search_criteria_dict[criteria_key]
-                if criteria is not None:
-                    person_criteria = await _get_person_criteria_by_name(arg_name=criteria_key)
-                    if person_criteria:
-                        criteria_matcher = CriteriaMatcher(person=person, criteria_name=criteria_key,
-                                                           field_value=criteria)
-                        if await criteria_matcher.parse_person_criteria():
-                            if person not in filtered_persons:
-                                filtered_persons.append(person)
-                        else:
-                            if person in filtered_persons:
-                                filtered_persons.remove(person)
-        context = {"persons": filtered_persons}
+        filtered = await _get_filtered_persons()
+        # person skills filtering
+        search_skills = search_criteria_dict['skills']
+        for p in filtered:
+            person_skills = await objects.execute(PersonSkill.select().where(PersonSkill.person == p))
+            matched = False
+            for person_skill in person_skills:
+                for search_skill_name in search_skills:
+                    if person_skill.skill.name == search_skill_name:
+                        matched = True
+            if not matched:
+                try:
+                    filtered.remove(p)
+                except Exception as e:
+                    print_tb(e)
+        context = {"persons": filtered}
         return context
 
     async def post(self):

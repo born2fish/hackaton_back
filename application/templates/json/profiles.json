@@ -1,15 +1,17 @@
-{% for p in persons %}
-    {
-        "id": "{{ p.id }}",
-        "fio": "{{ p.fio }}",
-        "sex": "{{ p.sex }}",
-        "age": "{{ p.age }}",
-        "conviction": "{{ p.conviction }}",
-        "army": "{{ p.army}}",
-        "credit": "{{ p.credit}}",
-        "education": "{{ p.education}}",
-        "access": "{{ p.access}}",
-        "capacity": "{{ p.capacity}}",
-        "army": "{{ p.private}}",
-    }
-{% endfor %}
+[
+    {% for p in persons %}
+        {
+            "id": "{{ p.id }}",
+            "fio": "{{ p.fio }}",
+            "sex": "{{ p.sex }}",
+            "age": "{{ p.age }}",
+            "conviction": "{{ p.conviction }}",
+            "army": "{{ p.army}}",
+            "credit": "{{ p.credit}}",
+            "education": "{{ p.education}}",
+            "access": "{{ p.access}}",
+            "capacity": "{{ p.capacity}}",
+            "army": "{{ p.private}}",
+        }{% if not loop.last %},{% endif %}
+    {% endfor %}
+]

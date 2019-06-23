@@ -11,7 +11,7 @@
             "education": "{{ p.education}}",
             "access": "{{ p.access}}",
             "capacity": "{{ p.capacity}}",
-            "army": "{{ p.private}}",
+            "army": "{{ p.private}}"
         }{% if not loop.last %},{% endif %}
     {% endfor %}
 ]

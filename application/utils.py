@@ -147,7 +147,7 @@ class CriteriaMatcher:
         self.field_value = field_value
 
     async def _match_fio(self):
-        if self.field_value in self.person.fio:
+        if self.field_value.lower() in self.person.fio.lower():
             result = True
         else:
             result = False

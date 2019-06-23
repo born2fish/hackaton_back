@@ -185,7 +185,7 @@ class ApiView(web.View):
                 matched = False
                 for person_skill in person_skills:
                     for search_skill_name in search_skills:
-                        if person_skill.skill.name == search_skill_name:
+                        if person_skill.skill.name.lower() == search_skill_name.lower():
                             matched = True
                 if not matched:
                     try:

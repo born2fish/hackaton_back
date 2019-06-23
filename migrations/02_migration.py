@@ -1,15 +1,14 @@
-from peewee import ProgrammingError
+from peewee import ProgrammingError, BooleanField
+from playhouse.migrate import migrate, PostgresqlMigrator
 
-from treasures_bot.models import database, User, UserProfile, UserFriend, Payment, Transaction, BaseDocument, Invoice
-from treasures_bot.utils import print_tb
+from application.models import database
+from application.utils import print_tb
+
+migrator = PostgresqlMigrator(database)
 
 try:
-    # database.drop_table(Sector)
-    database.create_tables(
-        [
-            Transaction, BaseDocument, Invoice, Payment
-        ]
-    )
+    sex = BooleanField(default=True)
+    migrate(migrator.add_column('bot_person', 'sex', sex))
 except ProgrammingError as pe:
     print_tb(pe)
     database.rollback()

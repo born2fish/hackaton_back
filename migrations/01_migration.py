@@ -1,17 +1,12 @@
-from peewee import ProgrammingError
-
-from treasures_bot.models import database, User, UserProfile, UserFriend
-from treasures_bot.utils import print_tb
+from application.models import database, Person, Skill, PersonSkill
+from application.utils import print_tb
 
 try:
-    # database.drop_table(Sector)
     database.create_tables(
         [
-            User, UserProfile, UserFriend
+            Person, Skill, PersonSkill
         ]
     )
-except ProgrammingError as pe:
-    print_tb(pe)
-    database.rollback()
 except Exception as e:
+    print_tb(e)
     database.rollback()

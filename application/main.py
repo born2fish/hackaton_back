@@ -39,7 +39,7 @@ def setup_cors(app: web.Application):
     resource = cors.add(app.router.add_resource("/hello"))
     route = cors.add(
         resource.add_route("POST", ApiView), {
-            "http://139.59.140.119:9999http://139.59.140.119:9999": aiohttp_cors.ResourceOptions(
+            "http://139.59.140.119:9999": aiohttp_cors.ResourceOptions(
                 allow_credentials=True,
                 expose_headers=("X-Custom-Server-Header",),
                 allow_headers=("X-Requested-With", "Content-Type"),
@@ -67,7 +67,6 @@ def init(loop, argv):
     jinja_env.globals['STATIC'] = '/static/'
     jinja_env.globals['_'] = app['gettext']
 
-    setup_cors(app)
     # Locale settings
     return app
 

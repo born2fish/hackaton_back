@@ -14,7 +14,6 @@ def setup_routes(app):
     app.router.add_post('/bot/{bot_token}/', BotUpdateView)
     app.router.add_get('/join/{user_code}/', ReferralJoinHandler)
     app.router.add_post('/api/', ApiView)
-    app.router.add_options('/api/', ApiView)
     setup_static_routes(app)
 
 

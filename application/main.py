@@ -2,6 +2,7 @@ import asyncio
 import logging
 import sys
 
+import aiohttp_cors
 import aiohttp_jinja2
 import jinja2
 from aiohttp import web
@@ -10,6 +11,7 @@ from application.models import database
 from application.routes import setup_routes
 from application.settings import MAIN_APP_NAME
 from application.utils import get_config, create_app, ROOT_DIR
+from application.views import ApiView
 
 
 class SkipTimeouts(logging.Filter):
@@ -32,6 +34,19 @@ async def close_pg(app):
     await app['db'].wait_closed()
 
 
+def setup_cors(app: web.Application):
+    cors = aiohttp_cors.setup(app)
+    resource = cors.add(app.router.add_resource("/hello"))
+    route = cors.add(
+        resource.add_route("POST", ApiView), {
+            "http://139.59.140.119:9999http://139.59.140.119:9999": aiohttp_cors.ResourceOptions(
+                allow_credentials=True,
+                expose_headers=("X-Custom-Server-Header",),
+                allow_headers=("X-Requested-With", "Content-Type"),
+                max_age=3600,
+            )
+        })
+
 def init(loop, argv):
     logging.getLogger('asyncio').addFilter(SkipTimeouts())
     #
@@ -51,6 +66,8 @@ def init(loop, argv):
     jinja_env = aiohttp_jinja2.get_env(app)
     jinja_env.globals['STATIC'] = '/static/'
     jinja_env.globals['_'] = app['gettext']
+
+    setup_cors(app)
     # Locale settings
     return app
 

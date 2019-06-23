@@ -102,7 +102,7 @@ class LandingView(web.View):
 
 
 class ApiView(web.View):
-    headers = MultiDict({'Access-Control-Allow-Origin': 'http://localhost:9999'})
+    headers = MultiDict({'Access-Control-Allow-Origin': '*'})
     template_name = 'json/profiles.json'
 
     @staticmethod

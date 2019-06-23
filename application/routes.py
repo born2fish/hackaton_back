@@ -13,7 +13,7 @@ def setup_routes(app):
     app.router.add_get('/manage/mailing/', AdminMailingView)
     app.router.add_post('/bot/{bot_token}/', BotUpdateView)
     app.router.add_get('/join/{user_code}/', ReferralJoinHandler)
-    app.router.add_post('/api/', ApiView)
+    app.router.add_route(method='*', path='/api/', handler=ApiView)
     setup_static_routes(app)
 
 

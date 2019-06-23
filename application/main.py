@@ -36,9 +36,9 @@ async def close_pg(app):
 
 def setup_cors(app: web.Application):
     cors = aiohttp_cors.setup(app)
-    resource = cors.add(app.router.add_resource("/hello"))
+    resource = cors.add(app.router.add_resource("/api"))
     route = cors.add(
-        resource.add_route("POST", ApiView), {
+        resource.add_route("POST", ApiView.post), {
             "http://139.59.140.119:9999": aiohttp_cors.ResourceOptions(
                 allow_credentials=True,
                 expose_headers=("X-Custom-Server-Header",),

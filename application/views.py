@@ -181,16 +181,17 @@ class ApiView(web.View):
         search_skills = search_criteria_dict['skills']
         for p in filtered:
             person_skills = await objects.execute(PersonSkill.select().where(PersonSkill.person == p))
-            matched = False
-            for person_skill in person_skills:
-                for search_skill_name in search_skills:
-                    if person_skill.skill.name == search_skill_name:
-                        matched = True
-            if not matched:
-                try:
-                    filtered.remove(p)
-                except Exception as e:
-                    print_tb(e)
+            if search_skills:
+                matched = False
+                for person_skill in person_skills:
+                    for search_skill_name in search_skills:
+                        if person_skill.skill.name == search_skill_name:
+                            matched = True
+                if not matched:
+                    try:
+                        filtered.remove(p)
+                    except Exception as e:
+                        print_tb(e)
         context = {"persons": filtered}
         return context
 

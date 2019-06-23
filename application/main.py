@@ -5,11 +5,11 @@ import sys
 import aiohttp_jinja2
 import jinja2
 from aiohttp import web
+
 from application.models import database
 from application.routes import setup_routes
 from application.settings import MAIN_APP_NAME
 from application.support.bitcoin_support import BtcRateTicker
-from application.tasks import update_rates_task, clear_webhooks_task
 from application.utils import get_config, create_app, ROOT_DIR
 
 
@@ -68,16 +68,16 @@ def main(argv):
     # loop.set_debug(enabled=True)
     app = init(loop, argv)
 
-    ticker = BtcRateTicker()
-    rates_task = loop.create_task(update_rates_task(loop=loop, rates_ticker=ticker, app=app))
-    webhook_task = loop.create_task(clear_webhooks_task(loop=loop, app=app))
+    #ticker = BtcRateTicker()
+    #rates_task = loop.create_task(update_rates_task(loop=loop, rates_ticker=ticker, app=app))
+    #webhook_task = loop.create_task(clear_webhooks_task(loop=loop, app=app))
 
     web.run_app(app, access_log=None,
                 host=app['config']['app']['host'],
                 port=app['config']['app']['port'])
 
-    loop.run_until_complete(rates_task)
-    loop.run_until_complete(webhook_task)
+    #loop.run_until_complete(rates_task)
+    #loop.run_until_complete(webhook_task)
 
 
 if __name__ == '__main__':

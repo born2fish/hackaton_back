@@ -113,7 +113,7 @@ async def get_satoshis_commission(blockcypher_worker) -> int:
 
 def get_config(argv):
     ap = argparse.ArgumentParser()
-    config_path = '{root_dir}/config/application.yaml'.format(root_dir=ROOT_DIR)
+    config_path = '{root_dir}config/application.yaml'.format(root_dir=ROOT_DIR)
     commandline.standard_argparse_options(ap,
                                           default_config=config_path)
     options = ap.parse_args(argv)

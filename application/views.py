@@ -160,7 +160,7 @@ class ApiView(web.View):
         all_persons = await objects.execute(Person.select())
         filtered_persons = []
 
-        for person in all_persons[:2]:  # todo <<<<
+        for person in all_persons:
             for criteria_key in search_criteria_dict.keys():
                 criteria = search_criteria_dict[criteria_key]
                 if criteria is not None:

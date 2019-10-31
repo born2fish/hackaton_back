@@ -21,7 +21,7 @@ cmarkgfm==0.4.2
 cryptography==2.6.1
 decorator==4.4.0
 docutils==0.14
-ecdsa==0.13.2
+ecdsa==0.13.3
 future==0.17.1
 idna==2.8
 idna-ssl==1.1.0

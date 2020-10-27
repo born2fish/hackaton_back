@@ -18,7 +18,7 @@ ccxt==1.18.766
 cffi==1.12.3
 chardet==3.0.4
 cmarkgfm==0.4.2
-cryptography==2.6.1
+cryptography==3.2
 decorator==4.4.0
 docutils==0.14
 ecdsa==0.13.2

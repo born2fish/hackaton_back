@@ -11,7 +11,7 @@ backcall==0.1.0
 base58==1.0.3
 bitcoin==1.1.39
 bitmerchant==0.1.8
-bleach==3.1.0
+bleach==3.3.0
 blockcypher==1.0.73
 cachetools==3.1.0
 ccxt==1.18.766

@@ -47,7 +47,7 @@ pyOpenSSL==19.0.0
 PySocks==1.6.8
 python-dateutil==2.2
 pytz==2019.1
-PyYAML==5.1
+PyYAML==5.4
 readme-renderer==24.0
 redis==3.2.1
 requests==2.4.3
